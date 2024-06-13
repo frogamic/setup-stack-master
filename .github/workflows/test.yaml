@@ -1,0 +1,57 @@
+name: test
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test-latest:
+    name: Test with no specified versions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup stack_master
+        uses: ./
+
+      - name: Print versions
+        run: |
+          stack_master --version
+          cfn-lint --version
+
+      - name: stack_master init
+        run: stack_master init ap-southeast-2 test-stack
+
+      - name: stack_master lint
+        run: stack_master lint
+
+  test-versioned:
+    name: Test with specific versions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup stack_master
+        uses: ./
+        with:
+          stack-master-version: 2.14.0
+          cfn-lint-version: 0.82.2
+
+      - name: Print versions
+        run: |
+          stack_master --version
+          cfn-lint --version
+
+      - name: stack_master init
+        run: stack_master init ap-southeast-2 test-stack
+
+      - name: stack_master lint
+        run: stack_master lint
