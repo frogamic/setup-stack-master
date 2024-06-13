@@ -2,15 +2,31 @@ name: 'Setup stack_master'
 description: 'Installs stack_master to the actions runner'
 inputs:
   stack-master-version:
-    description: What version of stack_master to install
+    description: What version of stack_master to use
     required: false
   cfn-lint-version:
-    description: What version of cfn-lint to install
+    description: What version of cfn-lint to use
     required: false
+  ruby-version:
+    description: What version of ruby to use
+    required: false
+    default: ruby
+  python-version:
+    description: What version of python to use
+    required: false
+    default: 3.x
 
 runs:
   using: "composite"
   steps:
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ inputs.ruby-version }}
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
     - name: Install cfn-lint
       shell: bash
       run: pip install cfn-lint${{ inputs.cfn-lint-version && format('=={0}', inputs.cfn-lint-version) || '' }}
