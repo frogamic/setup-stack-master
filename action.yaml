@@ -1,0 +1,20 @@
+name: 'Setup stack_master'
+description: 'Installs stack_master to the actions runner'
+inputs:
+  stack-master-version:
+    description: What version of stack_master to install
+    required: false
+  cfn-lint-version:
+    description: What version of cfn-lint to install
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install cfn-lint
+      shell: bash
+      run: pip install cfn-lint${{ inputs.cfn-lint-version && format('=={0}', inputs.cfn-lint-version) || '' }}
+
+    - name: Install stack_master
+      shell: bash
+      run: gem install stack_master${{ inputs.stack-master-version && format(' -v {0}', inputs.stack-master-version) || '' }}
